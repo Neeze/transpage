@@ -13,6 +13,7 @@ import DocumentUploader from '../components/DocumentUploader';
 import DocumentAnalysisDemo from '../components/DocumentAnalysisDemo';
 import PricingCard from '../components/PricingCard';
 import AIAssistant from '../components/AIAssistant';
+import AnimatedSection from '../components/AnimatedSection';
 
 // Icons for features
 const icons = {
@@ -39,7 +40,7 @@ export default function Home() {
       </Hero>
       
       {/* Overview section */}
-      <section id="overview" className="azure-section">
+      <AnimatedSection id="overview" className="azure-section" delay={100}>
         <div className="azure-container">
           <div className="text-center mb-16">
             <h2 className="section-heading">Instant Translation. Perfect Formatting. Effortless Workflow.</h2>
@@ -72,10 +73,10 @@ export default function Home() {
             />
           </div>
         </div>
-      </section>
+      </AnimatedSection>
       
       {/* Use Cases section */}
-      <section className="azure-section bg-gray-50">
+      <AnimatedSection className="azure-section bg-gray-50" delay={200}>
         <div className="azure-container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <FeatureCard 
@@ -98,10 +99,10 @@ export default function Home() {
             />
           </div>
         </div>
-      </section>
+      </AnimatedSection>
       
       {/* Demo section */}
-      <section id="features" className="azure-section">
+      <AnimatedSection id="features" className="azure-section" delay={300}>
         <div className="azure-container">
           <div className="text-center mb-16">
             <h2 className="section-heading">Use AI to Build Document Processing Workflows</h2>
@@ -158,7 +159,7 @@ export default function Home() {
           <div className="mt-16">
             <div className="text-center mb-10">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">Try Document Intelligence yourself</h3>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">Upload your own document to see Azure AI Document Intelligence in action.</p>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">Upload your own document to see Transpage Document Intelligence in action.</p>
             </div>
             
             {/* Interactive Analysis Demo */}
@@ -171,10 +172,10 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
       
       {/* Pricing section */}
-      <section id="pricing" className="azure-section bg-gray-50">
+      <AnimatedSection id="pricing" className="azure-section bg-gray-50" delay={400}>
         <div className="azure-container">
           <div className="text-center mb-16">
             <h2 className="section-heading">Process documents cost-effectively</h2>
@@ -186,45 +187,27 @@ export default function Home() {
           </div>
           
           {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <PricingCard
               title="Free"
               price="Free"
-              description="Try out Azure AI Document Intelligence with a limited number of document pages per month."
+              description="Get started with basic document translation capabilities at no cost."
               features={[
                 "500 document pages per month",
-                "Prebuilt models",
-                "Basic OCR capabilities",
+                "Standard models",
                 "Community support"
               ]}
               ctaText="Start for free"
             />
             
             <PricingCard
-              title="Standard"
-              price="$50"
-              description="Scale your document processing with higher limits and more features."
-              features={[
-                "2,500 document pages per month",
-                "Prebuilt and custom models (up to 5)",
-                "Advanced OCR capabilities",
-                "99.9% SLA",
-                "Email and phone support"
-              ]}
-              isPopular={true}
-              ctaText="Get started"
-            />
-            
-            <PricingCard
               title="Premium"
-              price="$500"
-              description="Enterprise-grade document intelligence capabilities for demanding workloads."
+              price="$20"
+              description="Unlock advanced features and higher usage limits for professional needs."
               features={[
                 "5,000+ document pages per month",
-                "Unlimited custom models",
-                "Priority API access",
-                "99.99% SLA",
-                "24/7 technical support"
+                "High-end models",
+                "Priority access",
               ]}
               ctaText="Contact sales"
             />
@@ -234,10 +217,10 @@ export default function Home() {
             <button className="azure-button-primary">View complete pricing details</button>
           </div>
         </div>
-      </section>
+      </AnimatedSection>
       
       {/* Documentation and Resources section */}
-      <section className="azure-section bg-gray-50">
+      <AnimatedSection className="azure-section bg-gray-50" delay={500}>
         <div className="azure-container">
           <div className="text-center mb-16">
             <h2 className="section-heading">Documentation and resources</h2>
@@ -246,7 +229,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FeatureCard 
               title="Get started" 
-              description="Check out all the Azure AI Document Intelligence documentation."
+              description="Check out all the Transpage documentation."
               icon={icons.document}
               delay={100}
             />
@@ -264,10 +247,10 @@ export default function Home() {
             />
           </div>
         </div>
-      </section>
+      </AnimatedSection>
       
       {/* Document Upload section */}
-      <section className="azure-section">
+      <AnimatedSection className="azure-section" delay={600}>
         <div className="azure-container">
           <div className="text-center mb-16">
             <h2 className="section-heading">Upload your document to see AI in action</h2>
@@ -278,13 +261,13 @@ export default function Home() {
             <DocumentUploader />
           </div>
         </div>
-      </section>
+      </AnimatedSection>
       
       {/* CTA section */}
       <section className="azure-section bg-gradient-to-r from-azure-blue-800 to-azure-blue-600 text-white">
         <div className="azure-container text-center">
           <h2 className="section-heading text-white">Choose the Transpage account that's right for you</h2>
-          <p className="section-subheading text-gray-100 mx-auto">Pay as you go or try Azure free for up to 30 days.</p>
+          <p className="section-subheading text-gray-100 mx-auto">Pay as you go or try Transpage free for up to 30 days.</p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
             <button className="bg-white hover:bg-gray-50 text-azure-blue-700 font-semibold py-3 px-6 rounded-md transition-all duration-300 inline-flex items-center">
               Get started with Transpage

@@ -11,17 +11,15 @@ const Header: React.FC = () => {
           {/* Left side - Microsoft Azure logo */}
           <div className="flex items-center space-x-6">
             <div className="flex items-center">
-              <div className="w-6 h-6 mr-2">
+              {/* <div className="w-6 h-6 mr-2">
                 <svg viewBox="0 0 24 24" className="w-full h-full">
                   <path fill="#F25022" d="M11.4 0H0v11.4h11.4V0z"/>
                   <path fill="#7FBA00" d="M24 0H12.6v11.4H24V0z"/>
                   <path fill="#00A4EF" d="M11.4 12.6H0V24h11.4V12.6z"/>
                   <path fill="#FFB900" d="M24 12.6H12.6V24H24V12.6z"/>
                 </svg>
-              </div>
-              <span className="font-semibold text-gray-800 mr-1">Microsoft</span>
-              <span className="text-gray-400">|</span>
-              <span className="ml-1 font-semibold text-blue-600">Azure</span>
+              </div> */}
+              <span className="ml-1 font-semibold text-blue-600">Transpage</span>
             </div>
             
             {/* Navigation menu */}

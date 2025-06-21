@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 
 interface HeroProps {
   title: string;
@@ -10,17 +11,27 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ title, subtitle, children }) => {
   return (
-    <div className="relative min-h-[600px] bg-gradient-to-br from-purple-400 via-pink-300 to-blue-600 overflow-hidden">
-      {/* Gradient background that matches Azure's design */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 via-pink-400/20 to-blue-600/40"></div>
+    <div className="relative min-h-[600px] overflow-hidden">
+      {/* Banner Image Background */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/main_banner.png"
+          alt="Hero Banner"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
       
-      {/* Content */}
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/20"></div>
+        {/* Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="max-w-2xl">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
             {title}
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
+          <p className="text-lg md:text-xl text-white mb-8 leading-relaxed">
             {subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
