@@ -23,7 +23,7 @@ const Testimonial: React.FC<TestimonialProps> = ({ quote, author, role, company,
           className="object-contain"
         />
       </div>
-      <p className="text-gray-700 italic mb-6">"{quote}"</p>
+      <p className="text-gray-700 italic mb-6">&ldquo;{quote}&rdquo;</p>
       <div className="flex items-start">
         <div>
           <p className="font-semibold text-gray-900">{author}</p>

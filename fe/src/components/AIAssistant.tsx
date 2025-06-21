@@ -26,9 +26,8 @@ const AIAssistant: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-          </div>
-          <div className="text-sm text-gray-700">
-            Hi! I'm here to help you with Transpage. What would you like to know?
+          </div>          <div className="text-sm text-gray-700">
+            Hi! I&apos;m here to help you with Transpage. What would you like to know?
           </div>
         </div>
       )}

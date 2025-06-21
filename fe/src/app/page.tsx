@@ -1,16 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Tabs from '../components/Tabs';
 import FeatureCard from '../components/FeatureCard';
 import DemoBox from '../components/DemoBox';
 import ComparisonTable from '../components/ComparisonTable';
-import Testimonial from '../components/Testimonial';
 import DocumentUploader from '../components/DocumentUploader';
-import DocumentAnalysisDemo from '../components/DocumentAnalysisDemo';
 import PricingCard from '../components/PricingCard';
 import AIAssistant from '../components/AIAssistant';
 import AnimatedSection from '../components/AnimatedSection';
@@ -266,7 +263,7 @@ export default function Home() {
       {/* CTA section */}
       <section className="azure-section bg-gradient-to-r from-azure-blue-800 to-azure-blue-600 text-white">
         <div className="azure-container text-center">
-          <h2 className="section-heading text-white">Choose the Transpage account that's right for you</h2>
+          <h2 className="section-heading text-white">Choose the Transpage account that&apos;s right for you</h2>
           <p className="section-subheading text-gray-100 mx-auto">Pay as you go or try Transpage free for up to 30 days.</p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
             <button className="bg-white hover:bg-gray-50 text-azure-blue-700 font-semibold py-3 px-6 rounded-md transition-all duration-300 inline-flex items-center">

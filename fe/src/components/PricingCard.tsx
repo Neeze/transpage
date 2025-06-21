@@ -19,7 +19,6 @@ const PricingCard: React.FC<PricingCardProps> = ({
   features,
   isPopular = false,
   ctaText = "Get started",
-  ctaLink = "#",
 }) => {
   return (
     <div className={`
