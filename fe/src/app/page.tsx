@@ -156,21 +156,21 @@ export default function Home() {
           )}
           
           {/* Try It Yourself Section */}
-          <div className="mt-16">
+          {/* <div className="mt-16">
             <div className="text-center mb-10">
               <h3 className="text-2xl md:text-3xl font-bold mb-4">Try Document Intelligence yourself</h3>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">Upload your own document to see Transpage Document Intelligence in action.</p>
-            </div>
+            </div> */}
             
             {/* Interactive Analysis Demo */}
-            <div className="mb-16">
+            {/* <div className="mb-16">
               <DocumentAnalysisDemo />
             </div>
             
             <div className="max-w-xl mx-auto">
               <DocumentUploader />
             </div>
-          </div>
+          </div> */}
         </div>
       </AnimatedSection>
       
