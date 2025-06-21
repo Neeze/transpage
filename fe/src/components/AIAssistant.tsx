@@ -27,11 +27,8 @@ const AIAssistant: React.FC = () => {
               </svg>
             </button>
           </div>
-          <p className="text-sm text-gray-600 mb-3">
-            Created with Copilot Studio
-          </p>
           <div className="text-sm text-gray-700">
-            Hi! I'm here to help you with Azure AI Document Intelligence. What would you like to know?
+            Hi! I'm here to help you with Transpage. What would you like to know?
           </div>
         </div>
       )}
