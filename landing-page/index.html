@@ -1,0 +1,395 @@
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Transpage project</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link href="./assets/css/custom.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<!-- ScrollSmoother requires ScrollTrigger -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollSmoother.min.js"></script>
+</head>
+<body>
+
+<nav class="w-full z-20 top-0 start-0 border-b border-gray-200 bg-transparent">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
+            <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo">
+            <span class="self-center text-2xl font-semibold whitespace-nowrap text-black">Transpage</span>
+        </a>
+        <div class="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center">Khám phá</button>
+            <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-sticky" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                </svg>
+            </button>
+        </div>
+        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+            <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-transparent md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
+                <li>
+                    <a href="#" class="block py-2 px-3 text-black md:text-blue-700 md:p-0" aria-current="page">Trang chủ</a>
+                </li>
+                <li>
+                    <a href="#" class="block py-2 px-3 text-black rounded-sm hover:text-blue-700 md:p-0">Dịch vụ</a>
+                </li>
+                <li>
+                    <a href="#" class="block py-2 px-3 text-black rounded-sm hover:text-blue-700 md:p-0">Bảng Giá</a>
+                </li>
+                <li>
+                    <a href="#" class="block py-2 px-3 text-black rounded-sm hover:text-blue-700 md:p-0">Về chúng tôi</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<section class="bg-transparent">
+    <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+        <div class="mr-auto place-self-center lg:col-span-7">
+            <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-blue-900 md:text-4xl xl:text-4xl leading-tight"><span id="typewriter"></span></h1>
+            <p class="mb-6 font-light text-gray-900 lg:mb-8 md:text-lg lg:text-xl">
+                Dịch vụ dịch thuật thông minh giúp bạn giao tiếp dễ dàng, truyền tải thông điệp chính xác và hiệu quả ở bất kỳ đâu.
+            </p>
+
+            <a href="#"
+               class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+                Bắt đầu
+            </a>
+
+            <a href="#"
+               class="inline-flex items-center bg-white justify-center px-5 py-3 text-base font-medium text-center text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 focus:ring-4 focus:ring-blue-200">
+                Dùng thử miễn phí
+            </a>
+        </div>
+        <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+            <img class="section-1-image" src="./assets/images/section-1.png" alt="mockup">
+        </div>
+    </div>
+</section>
+
+<section class="bg-transparent">
+    <div class="gap-8 items-center py-8 px-4 mx-auto max-w-screen-xl xl:gap-16 md:grid md:grid-cols-2 sm:py-16 lg:px-6">
+        <div style="min-height: 300px; border-radius:16px; overflow:hidden;">
+            <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/_fuimO6ErKI"
+                title="Google – Welcome to the Gemini era"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                style="border-radius:16px;">
+            </iframe>
+        </div>
+
+        <div class="mt-4 md:mt-0">
+            <h2 class="mb-4 text-4xl tracking-tight font-extrabold" style="color:#1447e6">Tìm hiểu quy trình dịch thuật của chúng tôi</h2>
+            <p class="mb-6 font-light text-gray-900 md:text-lg">Quy trình dịch thuật của chúng tôi được thiết kế để nhanh chóng và dễ sử dụng. Chỉ cần tải lên tài liệu của bạn, chọn ngôn ngữ mong muốn, và bản dịch sẽ được gửi đến bạn chỉ trong tích tắc. Trải nghiệm giao tiếp liền mạch với nền tảng thân thiện và trực quan của chúng tôi.</p>
+        </div>
+    </div>
+</section>
+
+<section class="bg-transparent">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+    <div class="upload-box max-w-3xl bg-white p-4">
+      <div class="upload-text text-center">
+        <h2 class="mb-2 text-4xl tracking-tight font-extrabold" style="color:#004cdf"> Tải lên tài liệu </h2>
+        <p class="mb-8 font-light text-gray-900 sm:text-xl"> Kéo và thả tệp của bạn hoặc nhấp để chọn. </p>
+      </div>
+      <div class="upload-image">
+        <img src="./assets/images/section-3.svg" width="90%" alt="">
+      </div>
+    </div>
+    <div class="section-wrapper">
+      <div class="img-left">
+        <img src="./assets/images/section-3-1.svg" width="100%" alt="">
+      </div>
+      <div class="img-right">
+        <img src="./assets/images/section-3-2.svg" width="100%" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-transparent section-4">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-8">
+
+    <!-- Hình ảnh bên trái -->
+    <div class="lg:w-1/2 w-full flex justify-center hidden sm:block reveal-mask">
+      <img src="./assets/images/section-4.png" alt="Feature visual"
+           class="w-full max-w-md object-contain will-animate section4-hero">
+    </div>
+
+    <!-- Danh sách feature + CTA -->
+    <div class="lg:w-1/2 w-full space-y-6">
+      <div class="will-animate">
+        <h2 class="text-4xl sm:text-3xl lg:text-4xl font-extrabold text-blue-900 section4-title">
+          Dịch thuật tức thì. Định dạng hoàn hảo. Quy trình dễ dàng.
+        </h2>
+      </div>
+      <hr class="section4-hr"/>
+
+      <!-- Feature item 1 -->
+      <div class="flex flex-col md:flex-row md:items-start md:gap-4 feature-item will-animate">
+        <div class="flex-shrink-0 feature-icon">
+          <!-- (icon unchanged) -->
+          <svg width="25" height="25" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- ... -->
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3 class="text-xl font-semibold text-blue-900">Dịch sát nghĩa – chuyên ngành</h3>
+          <p class="mt-1 text-gray-900">Dịch chính xác nội dung trong nhiều lĩnh vực chuyên ngành – đảm bảo từng từ đều truyền tải đúng ý nghĩa như mong muốn.</p>
+          <a href="#" class="mt-2 inline-flex items-center text-blue-700 hover:underline">
+            Tìm hiểu thêm
+            <svg class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M12.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Feature item 2 -->
+      <div class="flex flex-col md:flex-row md:items-start md:gap-4 feature-item will-animate">
+        <div class="flex-shrink-0 feature-icon">
+          <!-- (icon unchanged) -->
+          <svg width="25" height="25" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- ... -->
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3 class="text-xl font-semibold text-blue-900">Giữ nguyên bố cục</h3>
+          <p class="mt-1 text-gray-900">Tự động giữ nguyên định dạng ban đầu của bạn — bảng biểu, hình ảnh, phông chữ và kiểu dáng đều được bảo toàn, loại bỏ hoàn toàn việc chỉnh sửa thủ công tốn thời gian.</p>
+          <a href="#" class="mt-2 inline-flex items-center text-blue-700 hover:underline">
+            Tìm hiểu thêm
+            <svg class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M12.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Feature item 3 -->
+      <div class="flex flex-col md:flex-row md:items-start md:gap-4 feature-item will-animate">
+        <div class="flex-shrink-0 feature-icon">
+          <!-- (icon unchanged) -->
+          <svg width="25" height="25" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- ... -->
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3 class="text-xl font-semibold text-blue-900">Tốc độ vượt trội</h3>
+          <p class="mt-1 text-gray-900">Dịch tài liệu nhanh chóng mà vẫn đảm bảo độ chính xác — lý tưởng cho các thời hạn trong học thuật, kinh doanh và nhu cầu hằng ngày.</p>
+          <a href="#" class="mt-2 inline-flex items-center text-blue-700 hover:underline">
+            Tìm hiểu thêm
+            <svg class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M12.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Feature item 4 -->
+      <div class="flex flex-col md:flex-row md:items-start md:gap-4 feature-item will-animate">
+        <div class="flex-shrink-0 feature-icon">
+          <!-- (icon unchanged) -->
+          <svg width="25" height="25" viewBox="0 0 33 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- ... -->
+          </svg>
+        </div>
+        <div class="feature-text">
+          <h3 class="text-xl font-semibold text-blue-900">Tùy chỉnh linh hoạt</h3>
+          <p class="mt-1 text-gray-900">Dễ dàng xem lại bản dịch, thực hiện các chỉnh sửa cuối cùng và xuất ra nhiều định dạng có thể chỉnh sửa một cách liền mạch.</p>
+          <a href="#" class="mt-2 inline-flex items-center text-blue-700 hover:underline">
+            Tìm hiểu thêm
+            <svg class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M12.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<section class="bg-gray-900 mt-40 will-animate" style="background-color: #8f64fb;">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+      <div class="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
+          <h2 class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white will-animate js-sec-title">
+            Dịch thuật tối ưu cho mọi tài liệu
+          </h2>
+          <p class="font-light text-gray-500 sm:text-xl dark:text-white will-animate js-sec-desc">
+            Giữ nguyên nội dung, định dạng và xuất bản nhanh chóng, giúp bạn tiết kiệm thời gian mà vẫn đảm bảo độ chính xác.
+          </p>
+      </div> 
+
+      <div class="grid gap-10 lg:grid-cols-3 js-card-grid">
+          <!-- Card 1 -->
+          <article class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-100 will-animate js-card">
+              <div class="flex justify-between items-center mb-5 text-gray-500">
+                  <span class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center rounded dark:bg-primary-200 dark:text-primary-800 reveal-mask">
+                    <svg class="js-card-icon" width="35" height="35" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M18.4167 2.83325H8.5C7.74855 2.83325 7.02788 3.13176 6.49653 3.66312C5.96518 4.19447 5.66666 4.91514 5.66666 5.66659V28.3333C5.66666 29.0847 5.96518 29.8054 6.49653 30.3367C7.02788 30.8681 7.74855 31.1666 8.5 31.1666H25.5C26.2514 31.1666 26.9721 30.8681 27.5035 30.3367C28.0348 29.8054 28.3333 29.0847 28.3333 28.3333V12.7499L18.4167 2.83325Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M18.4167 2.83325V12.7499H28.3333" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+              </div>
+              <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 mb-8 js-card-title">
+                <a href="#">Lưu giữ toàn vẹn nội dung tài liệu</a>
+              </h2>
+              <p class="mb-5 font-light text-gray-500 dark:text-gray-700 js-card-desc">
+                Dịch tài liệu của bạn một cách nhanh chóng với độ chính xác theo ngữ cảnh, đảm bảo mọi thuật ngữ chuyên ngành, cụm từ và sắc thái đều trung thực với ý nghĩa gốc.
+              </p>
+              <div class="flex justify-between items-center js-card-cta">
+                  <a href="#" class="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline js-cta-link">
+                      Tìm hiểu thêm
+                      <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                  </a>
+              </div>
+          </article>        
+
+          <!-- Card 2 -->
+          <article class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-100 will-animate js-card">
+              <div class="flex justify-between items-center mb-5 text-gray-500">
+                  <span class="bg-primary-100 text-primary-800 text-xs font-medium inline-flex items-center rounded dark:bg-primary-200 dark:text-primary-800 reveal-mask">
+                    <svg class="js-card-icon" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M26.9167 4.25H7.08333C5.51853 4.25 4.25 5.51853 4.25 7.08333V26.9167C4.25 28.4815 5.51853 29.75 7.08333 29.75H26.9167C28.4815 29.75 29.75 28.4815 29.75 26.9167V7.08333C29.75 5.51853 28.4815 4.25 26.9167 4.25Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M4.25 12.75H29.75" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M12.75 29.75V12.75" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+              </div>
+              <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 mb-8 js-card-title">
+                <a href="#">Tự động duy trì bố cục gốc</a>
+              </h2>
+              <p class="mb-5 font-light text-gray-500 dark:text-gray-700 js-card-desc">
+                Giữ nguyên định dạng tài liệu gốc — bảng biểu, tiêu đề, hình ảnh và phông chữ được bảo toàn đúng như mong muốn. Dịch dễ dàng mà không cần chỉnh sửa thủ công tốn thời gian.
+              </p>
+              <div class="flex justify-between items-center js-card-cta">
+                  <a href="#" class="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline js-cta-link">
+                      Tìm hiểu thêm
+                      <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                  </a>
+              </div>
+          </article>      
+
+          <!-- Card 3 -->
+          <article class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-100 will-animate js-card">
+              <div class="flex justify-between items-center mb-5 text-gray-500 reveal-mask">
+                <svg class="js-card-icon" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_487_2753)">
+                    <path d="M15.5833 5.66675H5.66665C4.9152 5.66675 4.19453 5.96526 3.66318 6.49661C3.13182 7.02797 2.83331 7.74863 2.83331 8.50008V28.3334C2.83331 29.0849 3.13182 29.8055 3.66318 30.3369C4.19453 30.8682 4.9152 31.1667 5.66665 31.1667H25.5C26.2514 31.1667 26.9721 30.8682 27.5034 30.3369C28.0348 29.8055 28.3333 29.0849 28.3333 28.3334V18.4167" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M26.2083 3.54158C26.7719 2.978 27.5363 2.66138 28.3333 2.66138C29.1303 2.66138 29.8947 2.978 30.4583 3.54158C31.0219 4.10517 31.3385 4.86955 31.3385 5.66658C31.3385 6.46361 31.0219 7.228 30.4583 7.79158L17 21.2499L11.3333 22.6666L12.75 16.9999L26.2083 3.54158Z" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_487_2753">
+                      <rect width="34" height="34" fill="black"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+              <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 mb-8 js-card-title">
+                <a href="#">Xuất bản dịch nhanh & tùy chỉnh linh hoạt</a>
+              </h2>
+              <p class="mb-5 font-light text-gray-500 dark:text-gray-700 js-card-desc">
+                Dễ dàng chỉnh sửa bản dịch và xuất tài liệu hoàn chỉnh của bạn trực tiếp sang các định dạng có thể chỉnh sửa (Word, PDF, PPT), giúp tích hợp mượt mà vào quy trình làm việc của bạn.
+              </p>
+              <div class="flex justify-between items-center js-card-cta">
+                  <a href="#" class="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline js-cta-link">
+                      Tìm hiểu thêm
+                      <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                  </a>
+              </div>
+          </article>      
+      </div>  
+  </div>
+</section>
+
+<section class="bg-transparent px-4 py-12 antialiased md:py-66">
+  <div class="mx-auto grid max-w-screen-lg rounded-lg bg-gray-50 p-4 dark:bg-white md:p-8 lg:grid-cols-12 lg:gap-8 lg:p-16">
+    <div class="lg:col-span-5 lg:mt-0"></div>
+    <div class="me-auto place-self-center lg:col-span-12">
+      <h1 class="mb-9 text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-4xl text-center" style="color:#8f64fb">
+        Sử dụng AI để xây dựng quy trình xử lý tài liệu
+      </h1>
+      <p class="mb-6 text-gray-500 dark:text-gray-400" style="color:#4671ff">Tìm hiểu cách tăng tốc quy trình kinh doanh của bạn bằng cách tự động hóa việc trích xuất văn bản với AI Document Intelligence. Phần này bao gồm các bản demo thực hành cho những tình huống sử dụng quan trọng như xử lý tài liệu, khai thác tri thức và tùy chỉnh mô hình AI theo từng ngành.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bg-gray-000 py-8 antialiased md:py-16">
+  <div class="mx-auto max-w-screen-lg px-4 2xl:px-0">
+
+    <div class="mt-6 flow-root">
+      <div class="-my-6 divide-y divide-gray-900 dark:divide-gray-800 border-b border-gray-300">
+        <div class="space-y-4 py-6 md:py-8">
+          <div class="grid gap-4">
+            <p class="text-xl font-semibold text-gray-900 dark:text-white" style="color:#2c69e4">Dễ dàng trích xuất văn bản và cấu trúc bằng REST API đơn giản</p>
+          </div>
+          <p class="text-base font-normal text-gray-500 dark:text-gray-900">Xử lý mọi loại tài liệu với các tính năng hỗ trợ bởi AI, có khả năng mở rộng theo quy mô doanh nghiệp của bạn. Trích xuất văn bản, bảng biểu và cấu trúc với độ chính xác hàng đầu trong ngành.</p>
+        </div>
+      </div>
+      <div class="-my-6 divide-y divide-gray-900 dark:divide-gray-800 border-b border-gray-300">
+        <div class="space-y-4 py-6 md:py-8">
+          <div class="grid gap-4">
+            <p class="text-xl font-semibold text-gray-900 dark:text-white" style="color:#2c69e4">Trích xuất dữ liệu chính xác, phù hợp với từng loại biểu mẫu</p>
+          </div>
+          <p class="text-base font-normal text-gray-500 dark:text-gray-900">Thời gian hoàn thành của chúng tôi phụ thuộc vào độ dài và độ phức tạp của tài liệu. Thông thường, chúng tôi cố gắng giao bản dịch trong vòng 24 giờ. Đối với các yêu cầu gấp, vui lòng liên hệ với chúng tôi để được hỗ trợ dịch vụ nhanh.</p>
+        </div>
+      </div>
+      <div class="-my-6 divide-y divide-gray-900 dark:divide-gray-800 border-b border-gray-300">
+        <div class="space-y-4 py-6 md:py-8">
+          <div class="grid gap-4">
+            <p class="text-xl font-semibold text-gray-900 dark:text-white" style="color:#2c69e4">Ứng dụng AI Document Intelligence ở bất kỳ đâu — trên nền tảng cloud hoặc thiết bị biên (edge)</p>
+          </div>
+          <p class="text-base font-normal text-gray-500 dark:text-gray-900">Triển khai AI Document Intelligence tại bất kỳ nơi nào dữ liệu của bạn đang được lưu trữ. Xử lý tài liệu trên nền tảng đám mây, tại chỗ hoặc trên thiết bị biên với các tùy chọn triển khai linh hoạt.</p>
+        </div>
+      </div>
+      <div class="-my-6 divide-y divide-gray-900 dark:divide-gray-800">
+        <div class="space-y-4 py-6 md:py-8">
+          <div class="grid gap-4">
+            <p class="text-xl font-semibold text-gray-900 dark:text-white" style="color:#2c69e4">Tiết kiệm thời gian với các mẫu AI có sẵn cho hóa đơn, biểu mẫu và nhiều hơn nữa</p>
+          </div>
+          <p class="text-base font-normal text-gray-500 dark:text-gray-900">Sử dụng các mô hình đã được tạo sẵn cho hóa đơn, biên lai, danh thiếp và nhiều loại tài liệu khác. Bắt đầu ngay mà không cần đào tạo mô hình tùy chỉnh.</p>
+        </div>
+      </div>
+    </div>
+</section>
+
+<footer class="p-4 bg-white md:p-8 lg:p-10 dark:bg-blue-800">
+  <div class="mx-auto max-w-screen-xl text-center">
+      <a href="#" class="flex justify-center items-center text-2xl font-semibold text-gray-900 dark:text-white">
+          Transpage.vn    
+      </a>
+      <p class="my-6 text-gray-500 dark:text-gray-400">Website dịch thuật sử dụng AI để xây dựng quy trình xử lý tài liệu</p>
+      <ul class="flex flex-wrap justify-center items-center mb-6 text-gray-900 dark:text-white">
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6 ">About</a>
+          </li>
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">Premium</a>
+          </li>
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6 ">Campaigns</a>
+          </li>
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">Blog</a>
+          </li>
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">Affiliate Program</a>
+          </li>
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">FAQs</a>
+          </li>
+          <li>
+              <a href="#" class="mr-4 hover:underline md:mr-6">Contact</a>
+          </li>
+      </ul>
+      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2025 <a href="#" class="hover:underline">Transpage.vn</a></span>
+  </div>
+</footer>
+
+<script src="./assets/js/page-1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+</body>
+</html>

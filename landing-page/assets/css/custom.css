@@ -1,0 +1,127 @@
+.section-1-image {
+    animation: float 1.3s infinite alternate;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-35px);
+    }
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+}
+body {
+    background-image: url('/assets/images/gradient-bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top center;
+    background-attachment: fixed;
+    width: 100%;
+}
+
+#typewriter {
+    display: inline-block;
+    min-height: 2.8em; /* giữ chiều cao dòng */
+}
+
+.upload-box {
+    margin-left: 150px;
+    position: relative;
+    min-height: 234px;
+    border-radius: 25px;
+}
+
+.upload-text {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+}
+
+.upload-image {
+    position: absolute;
+    right: -180px;
+    top: -5px;
+}
+
+.section-wrapper {
+    margin-top: 80px;
+    position: relative;
+}
+
+.section-wrapper .img-left {
+    position: absolute;
+}
+
+.section-wrapper .img-right {
+    position: absolute;
+    right: 0;
+    top: 90px;
+}
+
+.section-4 {
+    margin-top:500px;
+    position: relative;
+}
+
+
+@media screen and (max-width: 639px) {
+    #typewriter {
+        display: inline-block;
+        min-height: 5em; /* giữ chiều cao dòng */
+    }
+
+    .upload-box {
+        margin-left: 0px;
+        position: relative;
+        border-radius: 25px;
+        min-height: 234px;
+    }
+
+    .upload-text {
+        position: absolute;
+        left: 50px;
+        top: 10px;
+    }
+
+    .upload-image {
+        width: 100%;
+        left:-5%;
+        position: absolute;
+        top: 70px;
+    }
+
+
+    .section-wrapper {
+        margin-top: 50px;
+        position: relative;
+    }
+
+    .section-wrapper .img-left {
+        top:0px;
+        position: relative;
+    }
+
+    .section-wrapper .img-right {
+        top:0px;
+        margin-top: 50px;
+        position: relative;
+
+    }
+
+    .section-4 {
+        margin-top:0;
+        position: relative;
+    }
+}
+
+
+.reveal-mask { overflow: hidden; }
+.will-animate { will-change: transform, opacity; }
