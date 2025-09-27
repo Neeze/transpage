@@ -8,13 +8,13 @@ const ActivityLog = require("./ActivityLog");
 
 // Associations
 User.hasMany(ApiKey, { foreignKey: "userId" });
-ApiKey.belongsTo(User);
+ApiKey.belongsTo(User, { foreignKey: "userId" });
 
 User.hasMany(Order, { foreignKey: "userId" });
-Order.belongsTo(User);
+Order.belongsTo(User, { foreignKey: "userId" });
 
 User.hasMany(ActivityLog, { foreignKey: "userId" });
-ActivityLog.belongsTo(User);
+ActivityLog.belongsTo(User, { foreignKey: "userId" });
 
 // Export ra dùng chung
 module.exports = {

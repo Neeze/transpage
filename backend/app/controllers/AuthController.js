@@ -164,6 +164,47 @@ class AuthController {
         }
     }
 
+    async getActivityLogs (req, res) {
+        try {
+            const userId = req.user.id;
+
+            const page = parseInt(req.query.page) || 1;
+            const pageSize = parseInt(req.query.pageSize) || 10;
+            const offset = (page - 1) * pageSize;
+
+            const { count, rows } = await ActivityLog.findAndCountAll({
+            where: { userId },
+            order: [["createdAt", "DESC"]],
+            limit: pageSize,
+            offset,
+            attributes: [
+                "id",
+                "action",
+                "metadata",
+                "pointBefore",
+                "pointChange",
+                "pointAfter",
+                "createdAt",
+            ],
+        });
+
+        res.json({
+            success: true,
+            logs: rows,
+            pagination: {
+                total: count,
+                page,
+                pageSize,
+                totalPages: Math.ceil(count / pageSize),
+            },
+        });
+        } catch (err) {
+            console.error("Get activity logs error:", err);
+            res.status(500).json({ error: "Không thể lấy lịch sử hoạt động" });
+        }
+    };
+
 }
+
 
 module.exports = new AuthController();

@@ -41,6 +41,16 @@ const data = {
       icon: IconHome,
       url: "/main",
     },
+    {
+      title: "Lịch sử dịch",
+      icon: IconListDetails,
+      url: "/main/history/translate",
+    },
+    {
+      title: "Nhật ký hoạt động",
+      icon: IconListDetails,
+      url: "/main/history/activaty_log",
+    },
   ],
   navSecondary: [
     {

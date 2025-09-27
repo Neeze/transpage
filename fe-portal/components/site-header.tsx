@@ -16,7 +16,7 @@ export function SiteHeader() {
           />
           {/* Số dư thay cho chữ "Trang Chính" */}
           <div className="flex items-center gap-2 text-base font-medium text-blue-600">
-            Số dư: {user?.points ? user?.points?.toLocaleString("vi-VN") : '-'} $
+            Số dư: {user?.points ? user?.points?.toLocaleString("vi-VN") : '0'} $
           </div>
 
           <div className="ml-auto flex items-center gap-2">
