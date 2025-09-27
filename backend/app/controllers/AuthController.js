@@ -6,7 +6,7 @@ const { success, error } = require("../helpers/response");
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-class UserController {
+class AuthController {
     // Đăng ký local
     async register(req, res) {
         try {
@@ -32,11 +32,13 @@ class UserController {
                 pointAfter: 0,
             });
 
-            return success(res, "Đăng ký người dùng thành công", {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-            }, 201, req);
+            const token = jwt.sign(
+                { id: user.id, role: user.role, provider: user.provider },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+
+            return success(res, "Đăng ký người dùng thành công", { token }, 201, req);
         } catch (err) {
             return error(res, "Người dùng đã tồn tại hoặc dữ liệu không hợp lệ", { chiTiet: err.message }, 400, req);
         }
@@ -141,64 +143,27 @@ class UserController {
         }
     }
 
-    // Danh sách user
-    async index(req, res) {
-        const users = await User.findAll({ attributes: ["id", "username", "email", "points", "role", "provider"] });
-        return success(res, "Lấy danh sách người dùng thành công", users, 200, req);
+    async info(req, res) {
+        try {
+            // req.user được set trong authMiddleware sau khi verify JWT
+            if (!req.user) {
+                return error(res, "Không tìm thấy thông tin người dùng", null, 401, req);
+            }
+
+            const user = await User.findByPk(req.user.id, {
+                attributes: ["id", "username", "email", "role", "points", "provider", "avatarUrl", "createdAt"],
+            });
+
+            if (!user) {
+                return error(res, "Không tồn tại người dùng", null, 404, req);
+            }
+
+            return success(res, "Lấy thông tin người dùng thành công", user, 200, req);
+        } catch (err) {
+            return error(res, "Không thể lấy thông tin người dùng", { chiTiet: err.message }, 500, req);
+        }
     }
 
-    // Chi tiết user
-    async show(req, res) {
-        const user = await User.findByPk(req.params.id, { attributes: ["id", "username", "email", "points", "role", "provider"] });
-        if (!user) return error(res, "Không tìm thấy người dùng", null, 404, req);
-        return success(res, "Lấy thông tin người dùng thành công", user, 200, req);
-    }
-
-    // Cập nhật user
-    async update(req, res) {
-        const user = await User.findByPk(req.params.id);
-        if (!user) return error(res, "Không tìm thấy người dùng", null, 404, req);
-
-        const oldPoints = user.points;
-        await user.update(req.body);
-
-        await ActivityLog.create({
-            userId: user.id,
-            action: "UPDATE_USER",
-            metadata: { thongBao: "Cập nhật thông tin người dùng", capNhat: req.body },
-            pointBefore: oldPoints,
-            pointChange: user.points - oldPoints,
-            pointAfter: user.points,
-        });
-
-        return success(res, "Cập nhật người dùng thành công", {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            points: user.points,
-            role: user.role,
-            provider: user.provider,
-        }, 200, req);
-    }
-
-    // Xóa user
-    async destroy(req, res) {
-        const user = await User.findByPk(req.params.id);
-        if (!user) return error(res, "Không tìm thấy người dùng", null, 404, req);
-
-        await user.destroy();
-
-        await ActivityLog.create({
-            userId: user.id,
-            action: "DELETE_USER",
-            metadata: { thongBao: "Người dùng đã bị xóa" },
-            pointBefore: user.points,
-            pointChange: -user.points,
-            pointAfter: 0,
-        });
-
-        return success(res, "Xóa người dùng thành công", null, 200, req);
-    }
 }
 
-module.exports = new UserController();
+module.exports = new AuthController();

@@ -2,10 +2,13 @@ const express = require("express");
 const routes = require("./app/routes");
 const logger = require("./app/helpers/logger");
 const morgan = require("morgan");
+const cors = require("cors");
 const { sequelize, User, ApiKey, Order, ActivityLog } = require("./app/models");
 require("dotenv").config();
 
 const app = express();
+app.use(cors());
+
 app.use(express.json());
 
 // HTTP request log (method, url, status, time)
