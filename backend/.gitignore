@@ -18,6 +18,8 @@ build/
 # Coverage
 coverage/
 
+uploads
+
 # System files
 .DS_Store
 Thumbs.db

@@ -8,6 +8,14 @@ const paymentRoutes = require("./momoPaymentRoutes");
 
 const router = express.Router();
 
+router.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+    });
+});
+
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
 router.post("/google-login", AuthController.googleLogin);
