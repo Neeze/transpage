@@ -1,8 +1,8 @@
-const { ApiKey } = require("../models");
+const { ApiKey, ActivityLog, User } = require("../models");
 const { v4: uuidv4 } = require("uuid");
 
 class ApiKeyController {
-    // Tạo API Key mới cho client
+    // 🟢 Tạo API Key mới cho client
     static async createApiKey(req, res) {
         try {
             const { name } = req.body;
@@ -15,14 +15,31 @@ class ApiKeyController {
                 status: "active",
             });
 
-            return res.status(201).json(apiKey);
+            // ✏️ Ghi log
+            const user = await User.findByPk(userId);
+            if (user) {
+                await ActivityLog.create({
+                    userId,
+                    action: "APIKEY_CREATE",
+                    metadata: { name, key: apiKey.key },
+                    pointBefore: user.points,
+                    pointChange: 0,
+                    pointAfter: user.points,
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                message: "Tạo API Key thành công",
+                apiKey,
+            });
         } catch (error) {
-            console.error(error);
+            console.error("❌ createApiKey error:", error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
-    // Lấy tất cả API Key của client với phân trang
+    // 📋 Lấy tất cả API Key của client (có phân trang)
     static async getMyApiKeys(req, res) {
         try {
             const userId = req.user.id;
@@ -35,10 +52,11 @@ class ApiKeyController {
                 attributes: ["id", "name", "key", "status", "createdAt"],
                 order: [["createdAt", "DESC"]],
                 limit: pageSize,
-                offset
+                offset,
             });
 
             return res.json({
+                success: true,
                 apiKeys: rows,
                 pagination: {
                     total: count,
@@ -48,12 +66,12 @@ class ApiKeyController {
                 },
             });
         } catch (err) {
-            console.error(err);
+            console.error("❌ getMyApiKeys error:", err);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
-    // Thu hồi API Key
+    // 🔒 Thu hồi API Key
     static async revokeMyApiKey(req, res) {
         try {
             const { id } = req.params;
@@ -67,14 +85,31 @@ class ApiKeyController {
             apiKey.status = "revoked";
             await apiKey.save();
 
-            return res.json({ message: "API Key revoked", apiKey });
+            // ✏️ Ghi log
+            const user = await User.findByPk(userId);
+            if (user) {
+                await ActivityLog.create({
+                    userId,
+                    action: "APIKEY_REVOKE",
+                    metadata: { apiKeyId: apiKey.id, name: apiKey.name, key: apiKey.key },
+                    pointBefore: user.points,
+                    pointChange: 0,
+                    pointAfter: user.points,
+                });
+            }
+
+            return res.json({
+                success: true,
+                message: "API Key đã bị thu hồi",
+                apiKey,
+            });
         } catch (error) {
-            console.error(error);
+            console.error("❌ revokeMyApiKey error:", error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
-    // Xóa API Key
+    // 🗑️ Xóa API Key
     static async deleteMyApiKey(req, res) {
         try {
             const { id } = req.params;
@@ -85,11 +120,34 @@ class ApiKeyController {
                 return res.status(404).json({ error: "API Key not found" });
             }
 
+            const deletedInfo = {
+                id: apiKey.id,
+                name: apiKey.name,
+                key: apiKey.key,
+                status: apiKey.status,
+            };
+
             await apiKey.destroy();
 
-            return res.json({ message: "API Key deleted" });
+            // ✏️ Ghi log
+            const user = await User.findByPk(userId);
+            if (user) {
+                await ActivityLog.create({
+                    userId,
+                    action: "APIKEY_DELETE",
+                    metadata: deletedInfo,
+                    pointBefore: user.points,
+                    pointChange: 0,
+                    pointAfter: user.points,
+                });
+            }
+
+            return res.json({
+                success: true,
+                message: "API Key đã được xóa",
+            });
         } catch (error) {
-            console.error(error);
+            console.error("❌ deleteMyApiKey error:", error);
             return res.status(500).json({ error: "Internal Server Error" });
         }
     }
