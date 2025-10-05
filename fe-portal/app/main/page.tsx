@@ -1,6 +1,6 @@
 "use client";
 import api from "@/lib/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -19,18 +19,44 @@ export default function TranslatePage() {
   const [loading, setLoading] = useState(false);
   const [downloadId, setDownloadId] = useState<string | null>(null);
 
-  // state cho các trường
+  // State cho form
   const [sourceLang, setSourceLang] = useState("");
   const [targetLang, setTargetLang] = useState("");
   const [topic, setTopic] = useState("");
   const [outputFormat, setOutputFormat] = useState("");
 
+  // Danh sách ngôn ngữ
+  const [languages, setLanguages] = useState<Record<string, string>>({});
+  const [langLoading, setLangLoading] = useState(true);
+
+  // Lấy danh sách ngôn ngữ hỗ trợ từ backend
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const res = await api.get("/translate/supported-languages");
+        setLanguages(res.data.languages || {});
+      } catch (err) {
+        console.error("Failed to load supported languages:", err);
+      } finally {
+        setLangLoading(false);
+      }
+    };
+    fetchLanguages();
+  }, []);
+
   // chọn file bằng click
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-      setDownloadId(null);
+    const selected = e.target.files?.[0];
+    if (!selected) return;
+
+    if (selected.type !== "application/pdf" && !selected.name.endsWith(".pdf")) {
+      alert("❌ Chỉ được phép tải lên tệp PDF!");
+      e.target.value = "";
+      return;
     }
+
+    setFile(selected);
+    setDownloadId(null);
   };
 
   // kéo & thả file
@@ -38,10 +64,17 @@ export default function TranslatePage() {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setFile(e.dataTransfer.files[0]);
-      setDownloadId(null);
+
+    const dropped = e.dataTransfer.files?.[0];
+    if (!dropped) return;
+
+    if (dropped.type !== "application/pdf" && !dropped.name.endsWith(".pdf")) {
+      alert("❌ Chỉ được phép tải lên tệp PDF!");
+      return;
     }
+
+    setFile(dropped);
+    setDownloadId(null);
   };
 
   // gọi API dịch
@@ -52,7 +85,7 @@ export default function TranslatePage() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("source_lang", sourceLang || "en");
+    formData.append("source_lang", sourceLang || "auto");
     formData.append("target_lang", targetLang || "vi");
     formData.append("topic", topic || "general");
     formData.append("output_format", outputFormat || "pdf");
@@ -84,13 +117,12 @@ export default function TranslatePage() {
     }
   };
 
-  // tải file
+  // tải file kết quả
   const handleDownload = async (jobId: string) => {
     try {
       const res = await api.get(`/translate/download/${jobId}`, {
         responseType: "blob",
       });
-
       const blob = new Blob([res.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
 
@@ -98,7 +130,6 @@ export default function TranslatePage() {
       link.href = url;
       link.download = `${jobId}_translated.${outputFormat || "pdf"}`;
       link.click();
-
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Download failed:", err);
@@ -137,12 +168,11 @@ export default function TranslatePage() {
               <input
                   id="file-input"
                   type="file"
+                  accept=".pdf" // ✅ chỉ cho phép PDF
                   className="hidden"
                   onChange={handleFileSelect}
               />
-              <p className="text-xs text-gray-500">
-                Hỗ trợ: PDF, JPEG, PNG, TIFF, DOCX
-              </p>
+              <p className="text-xs text-gray-500">Chỉ hỗ trợ tệp PDF</p>
               {file && (
                   <motion.p
                       initial={{ opacity: 0 }}
@@ -163,30 +193,60 @@ export default function TranslatePage() {
             transition={{ delay: 0.2 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
+          {/* Source Language */}
           <div>
             <Select onValueChange={setSourceLang}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Ngôn ngữ gốc" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="vi">Tiếng Việt</SelectItem>
-                <SelectItem value="en">English</SelectItem>
+                {langLoading ? (
+                    <SelectItem value="loading" disabled>
+                      <Loader2 className="w-4 h-4 animate-spin inline-block mr-2" />
+                      Đang tải...
+                    </SelectItem>
+                ) : (
+                    Object.entries(languages)
+                        .map(([code, name]) => (
+                            <SelectItem key={code} value={code}>
+                              {name}
+                            </SelectItem>
+                        ))
+                )}
               </SelectContent>
             </Select>
           </div>
 
+          {/* Target Language */}
           <div>
             <Select onValueChange={setTargetLang}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Ngôn ngữ dịch" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="vi">Tiếng Việt</SelectItem>
-                <SelectItem value="en">English</SelectItem>
+                {langLoading ? (
+                    <SelectItem value="loading" disabled>
+                      <Loader2 className="w-4 h-4 animate-spin inline-block mr-2" />
+                      Đang tải...
+                    </SelectItem>
+                ) : (
+                    Object.entries(languages)
+                        .filter(
+                            ([code, name]) =>
+                                code.toLowerCase() !== "auto" &&
+                                name.toLowerCase() !== "auto"
+                        )
+                        .map(([code, name]) => (
+                            <SelectItem key={code} value={code}>
+                              {name}
+                            </SelectItem>
+                        ))
+                )}
               </SelectContent>
             </Select>
           </div>
 
+          {/* Topic */}
           <div>
             <Select onValueChange={setTopic}>
               <SelectTrigger className="w-full">
@@ -194,18 +254,17 @@ export default function TranslatePage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="general">Chung</SelectItem>
-                <SelectItem value="tech">Kỹ thuật</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
+          {/* Output Format */}
           <div>
             <Select onValueChange={setOutputFormat}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Định dạng đầu ra" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="docx">DOCX</SelectItem>
                 <SelectItem value="pdf">PDF</SelectItem>
               </SelectContent>
             </Select>
@@ -230,7 +289,7 @@ export default function TranslatePage() {
           </Button>
         </div>
 
-        {/* Status / Result */}
+        {/* Result */}
         <AnimatePresence>
           {loading && (
               <motion.div

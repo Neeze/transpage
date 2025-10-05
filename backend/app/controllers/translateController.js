@@ -8,17 +8,54 @@ const Order = require("../models/Order");
 const User = require("../models/User");
 const ActivityLog = require("../models/ActivityLog");
 
+exports.getSupportedLanguages = async (req, res) => {
+    try {
+        const cacheKey = "translate:supported_languages";
+
+        // Kiểm tra cache trong Redis
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+            return res.json(JSON.parse(cached));
+        }
+
+        // Gọi API từ module.transpage.net
+        const response = await axios.get("http://module.transpage.net/api/v1/pdf/supported-languages");
+
+        if (!response.data || !response.data.languages) {
+            return res.status(502).json({ error: "Invalid response from translation module" });
+        }
+
+        const data = {
+            success: true,
+            total: Object.keys(response.data.languages).length,
+            languages: response.data.languages,
+        };
+
+        // Lưu cache trong 12 giờ (43200 giây)
+        await redis.set(cacheKey, JSON.stringify(data), "EX", 43200);
+
+        res.json(data);
+    } catch (err) {
+        console.error("Error fetching supported languages:", err);
+        res.status(500).json({ error: "Không thể lấy danh sách ngôn ngữ hỗ trợ" });
+    }
+};
+
 exports.createTranslateJob = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const userId = req.user.id; // từ authMiddleware
+    const userId = req.user.id;
     const jobId = uuidv4();
     const filePath = req.file.path;
 
     try {
-        // Tạo Order trong DB
+        // Bảo đảm thư mục uploads tồn tại
+        const uploadDir = path.resolve(__dirname, "../../uploads");
+        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+        // Tạo đơn hàng
         const order = await Order.create({
             jobId,
             userId,
@@ -31,7 +68,7 @@ exports.createTranslateJob = async (req, res) => {
             costPoints: 0,
         });
 
-        // Lưu trạng thái vào Redis cho polling
+        // Cập nhật trạng thái ban đầu vào Redis
         await redis.set(`translate:job:${jobId}:status`, "Pending");
 
         // Xử lý nền
@@ -42,37 +79,39 @@ exports.createTranslateJob = async (req, res) => {
 
                 const buffer = fs.readFileSync(filePath);
                 const base64File = buffer.toString("base64");
-                console.log({
-                    pdf_base64: base64File,
-                    source_lang: order.sourceLang,
-                    target_lang: order.targetLang,
-                })
+
                 const response = await axios.post("http://module.transpage.net/api/v1/pdf/translate-fast/", {
                     pdf_base64: base64File,
-                    source_lang: 'auto',
+                    source_lang: "auto",
                     target_lang: order.targetLang,
                 });
 
                 const result = response.data;
-                console.log(result)
 
                 if (result.status === "Completed") {
                     const translatedBuffer = Buffer.from(result.translated_pdf_base64, "base64");
-                    const outputFile = path.join("uploads", `${jobId}_translated.${order.outputFormat}`);
+
+                    const outputDir = path.resolve(__dirname, "../../uploads");
+                    const outputFile = path.join(outputDir, `${jobId}_translated.${order.outputFormat}`);
                     fs.writeFileSync(outputFile, translatedBuffer);
 
                     await order.update({
                         status: "done",
                         translatedFilePath: outputFile,
-                        cost: result.api_cost_usd || order.cost
+                        cost: result.api_cost_usd || order.cost,
                     });
 
-                    // Trừ điểm user
+                    // Cập nhật Redis
+                    await redis.set(`translate:job:${jobId}:status`, "Completed");
+                    await redis.set(`translate:job:${jobId}:result`, outputFile);
+
+                    // Ghi log hoạt động và điểm
                     const user = await User.findByPk(userId);
                     if (user) {
                         const before = user.points;
                         const change = -order.costPoints;
                         const after = before + change;
+
                         await user.update({ points: after });
 
                         await ActivityLog.create({
@@ -82,12 +121,9 @@ exports.createTranslateJob = async (req, res) => {
                             pointBefore: before,
                             pointChange: change,
                             pointAfter: after,
-                            UserId: user.id
+                            UserId: user.id,
                         });
                     }
-
-                    await redis.set(`translate:job:${jobId}:status`, "Completed");
-                    await redis.set(`translate:job:${jobId}:result`, outputFile);
                 } else {
                     await order.update({ status: "failed" });
                     await redis.set(`translate:job:${jobId}:status`, "Failed");
@@ -96,9 +132,6 @@ exports.createTranslateJob = async (req, res) => {
                 console.error("Translation error:", err);
                 await order.update({ status: "failed", errorMessage: err.message });
                 await redis.set(`translate:job:${jobId}:status`, "Failed");
-            } finally {
-                fs.unlinkSync(filePath);
-                await redis.del(`translate:job:${jobId}:file`);
             }
         });
 
@@ -119,29 +152,21 @@ exports.getTranslateStatus = async (req, res) => {
 
 exports.downloadTranslatedFile = async (req, res) => {
     const { jobId } = req.params;
-    const status = await redis.get(`translate:job:${jobId}:status`);
     const resultFile = await redis.get(`translate:job:${jobId}:result`);
 
-    if (status !== "Completed" || !resultFile) {
-        return res.status(404).json({ error: "Result not available" });
+    if (!resultFile || !fs.existsSync(resultFile)) {
+        return res.status(404).json({ error: "Translated file not found" });
     }
 
-    res.download(resultFile, `${jobId}_translated.pdf`, async (err) => {
-        if (!err) {
-            fs.unlinkSync(resultFile);
-            await redis.del([
-                `translate:job:${jobId}:status`,
-                `translate:job:${jobId}:result`
-            ]);
-        }
+    const fileName = path.basename(resultFile);
+    res.download(resultFile, fileName, (err) => {
+        if (err) console.error("Download error:", err);
     });
 };
 
 exports.getOrderHistory = async (req, res) => {
     try {
         const userId = req.user.id;
-
-        // Lấy query params page & pageSize, mặc định 1 và 10
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
         const offset = (page - 1) * pageSize;
@@ -159,6 +184,7 @@ exports.getOrderHistory = async (req, res) => {
                 "status",
                 "costPoints",
                 "createdAt",
+                "translatedFilePath",
             ],
             limit: pageSize,
             offset,
