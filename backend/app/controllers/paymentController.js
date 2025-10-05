@@ -26,6 +26,7 @@ exports.getPackages = async (req, res) => {
             { id: 2, label: "Gói Nâng Cao", amount: 100000, description: "Phổ biến cho người dùng thường xuyên" },
             { id: 3, label: "Gói Chuyên Nghiệp", amount: 200000, description: "Dành cho người dùng cao cấp" },
             { id: 4, label: "Gói Doanh Nghiệp", amount: 500000, description: "Tối đa lợi ích cho tổ chức" },
+            { id: 5, label: "Gói Test", amount: 5000, description: "Test" },
         ];
 
         const data = PACKAGES.map(pkg => ({
