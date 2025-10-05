@@ -34,7 +34,7 @@ services:
     container_name: backend
     restart: unless-stopped
     env_file: ./backend/.env
-    user: "${UID}:${GID}"
+    user: "${LOCAL_UID}:${LOCAL_GID}"
     volumes:
       - ./backend/logs:/usr/src/app/logs
       - ./backend/uploads:/usr/src/app/uploads
