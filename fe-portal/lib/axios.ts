@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // ✅ Lấy BASE URL từ biến môi trường
-const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3022/api";
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL + "/api";
 
 const api = axios.create({
     baseURL,
