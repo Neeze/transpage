@@ -10,7 +10,7 @@ router.post("/create", authMiddleware, paymentController.createPayment);
 
 router.get("/history", authMiddleware, paymentController.getPaymentHistory);
 // POST /payment/ipn
-// router.post("/ipn", paymentController.handleIPN);
+router.post("/ipn", paymentController.handleIPN);
 
 // GET /payment/return
 router.get("/return", paymentController.handleRedirect);

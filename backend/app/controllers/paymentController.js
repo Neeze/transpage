@@ -153,51 +153,60 @@ exports.getPaymentHistory = async (req, res) => {
     }
 };
 
-// ===================================================================
-// 2️⃣ IPN CALLBACK TỪ MOMO
-// ===================================================================
-// exports.handleIPN = async (req, res) => {
-//     try {
-//         const validation = validateMomoCallback(req.body, {
-//             accessKey: MOMO_ACCESS_KEY,
-//             secretKey: MOMO_SECRET_KEY,
-//         });
-//
-//         if (!validation.valid) {
-//             console.warn("❌ IPN Invalid:", validation.reason);
-//             return error(res, "IPN không hợp lệ", validation.reason, 400, req);
-//         }
-//
-//         const data = req.body;
-//         const payment = await Payment.findOne({ where: { orderId: data.orderId } });
-//         if (!payment) {
-//             return error(res, "Không tìm thấy giao dịch", null, 404, req);
-//         }
-//
-//         payment.transId = data.transId;
-//         payment.resultCode = data.resultCode;
-//         payment.message = data.message;
-//         payment.payType = data.payType;
-//         payment.status = data.resultCode === 0 ? "success" : "failed";
-//         await payment.save();
-//
-//         // Nếu thành công → cộng điểm user
-//         if (payment.status === "success") {
-//             const user = await User.findByPk(payment.userId);
-//             if (user) {
-//                 user.points += payment.points;
-//                 await user.save();
-//             }
-//         }
-//
-//         return success(res, "IPN xác nhận thành công", { orderId: payment.orderId, status: payment.status }, 200, req);
-//     } catch (err) {
-//         console.error("❌ handleIPN error:", err);
-//         return error(res, "Lỗi xử lý IPN", err.message, 500, req);
-//     }
-// };
+
+exports.handleIPN = async (req, res) => {
+    try {
+        const validation = validateMomoCallback(req.body, {
+            accessKey: MOMO_ACCESS_KEY,
+            secretKey: MOMO_SECRET_KEY,
+        });
+
+        if (!validation.valid) {
+            console.warn("❌ IPN Invalid:", validation.reason);
+            return error(res, "IPN không hợp lệ", validation.reason, 400, req);
+        }
+
+        const data = req.body;
+        const payment = await Payment.findOne({ where: { orderId: data.orderId } });
+        if (!payment) {
+            return error(res, "Không tìm thấy giao dịch", null, 404, req);
+        }
+
+        // Tránh xử lý lại nếu đã success hoặc failed
+        if (payment.status !== "pending") {
+            console.log(`⚠️ IPN bị bỏ qua (đã xử lý): ${payment.status}`);
+            return success(res, "Đã ghi nhận IPN trước đó", { orderId: payment.orderId, status: payment.status }, 200, req);
+        }
+
+        payment.transId = data.transId;
+        payment.resultCode = data.resultCode;
+        payment.message = data.message;
+        payment.payType = data.payType;
+        payment.status = data.resultCode === 0 ? "success" : "failed";
+        await payment.save();
+
+        // Nếu thành công → cộng điểm user (chỉ cộng 1 lần)
+        if (payment.status === "success") {
+            const user = await User.findByPk(payment.userId);
+            if (user) {
+                user.points += payment.points;
+                await user.save();
+            }
+        }
+
+        console.log(`✅ IPN xử lý xong: ${payment.orderId} → ${payment.status}`);
+
+        return success(res, "IPN xác nhận thành công", { orderId: payment.orderId, status: payment.status }, 200, req);
+    } catch (err) {
+        console.error("❌ handleIPN error:", err);
+        return error(res, "Lỗi xử lý IPN", err.message, 500, req);
+    }
+};
+
 
 exports.handleRedirect = async (req, res) => {
+    const FRONTEND_URL =
+        process.env.FRONTEND_URL + "/main/payment/result";
     try {
         const validation = validateMomoCallback(req.query, {
             accessKey: MOMO_ACCESS_KEY,
@@ -221,54 +230,25 @@ exports.handleRedirect = async (req, res) => {
         let pointsAdded = 0;
         const amountValue = payment.amount || 0;
 
-        // ✅ GIAO DỊCH THÀNH CÔNG
-        if (Number(resultCode) === 0) {
-            // Nếu chưa success thì cập nhật & cộng điểm
-            if (payment.status !== "success") {
-                payment.status = "success";
-                payment.resultCode = 0;
-                payment.message = message || "Thanh toán thành công (qua redirect)";
-                await payment.save();
-
-                const user = await User.findByPk(payment.userId);
-                if (user) {
-                    user.points += payment.points;
-                    await user.save();
-                }
-            }
-
+        // ✅ Xác định trạng thái cuối dựa trên DB (đã sync qua IPN)
+        if (payment.status === "success" || Number(resultCode) === 0) {
             redirectStatus = "success";
             redirectMessage = `Thanh toán thành công - Đã cộng ${payment.points} điểm`;
             pointsAdded = payment.points;
-        }
-
-        // ❌ GIAO DỊCH THẤT BẠI
-        else {
+        } else if (payment.status === "failed") {
             const resultMap = {
                 1001: "Người dùng hủy giao dịch",
                 1005: "Thanh toán bị từ chối",
                 1006: "Hết thời gian giao dịch",
                 9000: "Hệ thống MoMo tạm thời gián đoạn",
             };
-
-            const failReason =
-                resultMap[Number(resultCode)] || message || "Thanh toán thất bại";
-
-            // Nếu vẫn đang pending → cập nhật trạng thái thất bại
-            if (payment.status === "pending") {
-                payment.status = "failed";
-                payment.resultCode = Number(resultCode);
-                payment.message = failReason;
-                await payment.save();
-            }
-
-            redirectStatus = "failed";
-            redirectMessage = `Giao dịch thất bại: ${failReason}`;
+            redirectMessage =
+                resultMap[Number(resultCode)] || payment.message || message || "Thanh toán thất bại";
+        } else {
+            // pending (IPN chưa đến)
+            redirectStatus = "pending";
+            redirectMessage = "Đang chờ xác nhận thanh toán...";
         }
-
-        // ✅ TẠO URL REDIRECT TRẢ VỀ FRONTEND
-        const FRONTEND_URL =
-            process.env.FRONTEND_URL || "http://localhost:3000/main/payment/result";
 
         const redirectUrl =
             `${FRONTEND_URL}?status=${redirectStatus}` +
@@ -283,14 +263,11 @@ exports.handleRedirect = async (req, res) => {
         return res.redirect(302, redirectUrl);
     } catch (err) {
         console.error("❌ handleRedirect error:", err);
-
-        const FRONTEND_URL =
-            process.env.FRONTEND_URL || "http://localhost:3000/main/payment/result";
-
         const failUrl = `${FRONTEND_URL}?status=error&message=${encodeURIComponent(
             "Lỗi xử lý redirect — vui lòng thử lại sau."
         )}`;
         return res.redirect(302, failUrl);
     }
 };
+
 
