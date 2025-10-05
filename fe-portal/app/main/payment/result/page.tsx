@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { CheckCircle2, XCircle, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default function PaymentResultPage() {
+function PaymentResultContent() {
     const params = useSearchParams()
     const router = useRouter()
 
@@ -163,5 +163,19 @@ export default function PaymentResultPage() {
                 </CardFooter>
             </Card>
         </motion.div>
+    )
+}
+
+export default function Page() {
+    return (
+        <Suspense
+            fallback={
+                <div className="flex justify-center items-center h-[calc(100vh-8rem)] text-muted-foreground">
+                    Đang tải kết quả thanh toán...
+                </div>
+            }
+        >
+            <PaymentResultContent />
+        </Suspense>
     )
 }

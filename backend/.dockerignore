@@ -1,0 +1,42 @@
+# Node dependencies
+node_modules
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# Environment & credentials
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git and CI
+.git
+.gitignore
+.gitlab-ci.yml
+.github/
+*.log
+
+# Temporary and build output
+tmp/
+temp/
+.cache/
+coverage/
+logs/
+*.pid
+*.seed
+*.tgz
+
+# Docker-related
+Dockerfile*
+docker-compose*

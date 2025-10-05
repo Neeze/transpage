@@ -47,9 +47,9 @@ exports.createTranslateJob = async (req, res) => {
                     source_lang: order.sourceLang,
                     target_lang: order.targetLang,
                 })
-                const response = await axios.post("http://module.transpage.net/api/v1/pdf/translate/", {
+                const response = await axios.post("http://module.transpage.net/api/v1/pdf/translate-fast/", {
                     pdf_base64: base64File,
-                    source_lang: order.sourceLang,
+                    source_lang: 'auto',
                     target_lang: order.targetLang,
                 });
 
