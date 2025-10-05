@@ -13,4 +13,4 @@ if [ -f .env ]; then
 fi
 
 echo "Running Docker Compose with LOCAL_UID=$LOCAL_UID and LOCAL_GID=$LOCAL_GID..."
-docker compose up -d
+docker compose up -d --build
