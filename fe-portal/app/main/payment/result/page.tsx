@@ -154,7 +154,7 @@ function PaymentResultContent() {
                         </Button>
                         <Button
                             variant="outline"
-                            onClick={() => router.push("/main/payment/history")}
+                            onClick={() => router.push("/main/history/payment")}
                             className="transition-transform duration-300 hover:scale-105"
                         >
                             Xem lịch sử
