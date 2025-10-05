@@ -42,15 +42,19 @@ exports.createTranslateJob = async (req, res) => {
 
                 const buffer = fs.readFileSync(filePath);
                 const base64File = buffer.toString("base64");
-
-                const response = await axios.post("http://127.0.0.1:8000/api/v1/pdf/translate/", {
+                console.log({
+                    pdf_base64: base64File,
+                    source_lang: order.sourceLang,
+                    target_lang: order.targetLang,
+                })
+                const response = await axios.post("http://module.transpage.net/api/v1/pdf/translate/", {
                     pdf_base64: base64File,
                     source_lang: order.sourceLang,
                     target_lang: order.targetLang,
                 });
 
                 const result = response.data;
-
+                console.log(result)
 
                 if (result.status === "Completed") {
                     const translatedBuffer = Buffer.from(result.translated_pdf_base64, "base64");

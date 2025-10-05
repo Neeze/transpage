@@ -11,7 +11,7 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp, IconHome,
-  IconInnerShadowTop,
+  IconInnerShadowTop, IconKey,
   IconListDetails, IconMoneybag,
   IconReport,
   IconSearch,
@@ -42,6 +42,11 @@ const data = {
       url: "/main",
     },
     {
+      title: "Nạp tiền",
+      url: "/main/payment",
+      icon: IconMoneybag,
+    },
+    {
       title: "Lịch sử dịch",
       icon: IconListDetails,
       url: "/main/history/translate",
@@ -51,17 +56,22 @@ const data = {
       icon: IconListDetails,
       url: "/main/history/activaty_log",
     },
+    {
+      title: "Lịch sử giao dịch",
+      icon: IconListDetails,
+      url: "/main/history/payment",
+    },
+    {
+      title: "Quản lý APIKey",
+      icon: IconKey,
+      url: "/main/api-key",
+    },
   ],
   navSecondary: [
     {
       title: "Tài liệu API",
       url: "#",
       icon: IconFileAi,
-    },
-    {
-      title: "Nạp tiền",
-      url: "#",
-      icon: IconMoneybag,
     },
   ],
 }
@@ -80,7 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 {/*<IconInnerShadowTop className="!size-5" />*/}
-                <span className="text-base font-semibold">Transpage.vn</span>
+                <span className="text-base font-semibold">Transpage.net</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

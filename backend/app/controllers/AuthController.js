@@ -26,7 +26,7 @@ class AuthController {
             await ActivityLog.create({
                 userId: user.id,
                 action: "REGISTER_LOCAL",
-                metadata: { thongBao: "Người dùng đăng ký bằng email & mật khẩu", email },
+                metadata: { message: "Người dùng đăng ký bằng email & mật khẩu", email },
                 pointBefore: 0,
                 pointChange: 0,
                 pointAfter: 0,
@@ -66,7 +66,7 @@ class AuthController {
         await ActivityLog.create({
             userId: user.id,
             action: "LOGIN_LOCAL",
-            metadata: { thongBao: "Người dùng đăng nhập bằng email & mật khẩu", ip: req.ip, ua: req.headers["user-agent"] },
+            metadata: { message: "Người dùng đăng nhập bằng email & mật khẩu", ip: req.ip, ua: req.headers["user-agent"] },
             pointBefore: user.points,
             pointChange: 0,
             pointAfter: user.points,
@@ -114,7 +114,7 @@ class AuthController {
                 await ActivityLog.create({
                     userId: user.id,
                     action: "REGISTER_GOOGLE",
-                    metadata: { thongBao: "Người dùng đăng ký bằng Google", email },
+                    metadata: { message: "Người dùng đăng ký bằng Google", email },
                     pointBefore: 0,
                     pointChange: 0,
                     pointAfter: 0,
@@ -131,7 +131,7 @@ class AuthController {
             await ActivityLog.create({
                 userId: user.id,
                 action: "LOGIN_GOOGLE",
-                metadata: { thongBao: "Người dùng đăng nhập bằng Google", email },
+                metadata: { message: "Người dùng đăng nhập bằng Google", email },
                 pointBefore: user.points,
                 pointChange: 0,
                 pointAfter: user.points,
@@ -161,6 +161,64 @@ class AuthController {
             return success(res, "Lấy thông tin người dùng thành công", user, 200, req);
         } catch (err) {
             return error(res, "Không thể lấy thông tin người dùng", { chiTiet: err.message }, 500, req);
+        }
+    }
+
+    async updateInfo(req, res) {
+        try {
+            const userId = req.user?.id;
+            if (!userId) return error(res, "Người dùng chưa đăng nhập", null, 401, req);
+
+            const { username, avatarUrl, currentPassword, newPassword } = req.body;
+            const user = await User.findByPk(userId);
+
+            if (!user) return error(res, "Không tìm thấy người dùng", null, 404, req);
+
+            // ✅ Nếu muốn đổi mật khẩu → cần xác thực password cũ (chỉ áp dụng cho local)
+            if (newPassword) {
+                if (user.provider !== "local") {
+                    return error(res, "Tài khoản Google không thể đổi mật khẩu tại đây", null, 400, req);
+                }
+
+                if (!currentPassword) {
+                    return error(res, "Vui lòng nhập mật khẩu hiện tại", null, 400, req);
+                }
+
+                const valid = await bcrypt.compare(currentPassword, user.password);
+                if (!valid) {
+                    return error(res, "Mật khẩu hiện tại không đúng", null, 400, req);
+                }
+
+                const hashed = await bcrypt.hash(newPassword, 10);
+                user.password = hashed;
+            }
+
+            // ✅ Cập nhật các thông tin khác (nếu có)
+            if (username) user.username = username;
+            if (avatarUrl) user.avatarUrl = avatarUrl;
+
+            await user.save();
+
+            // Ghi lại log hoạt động
+            await ActivityLog.create({
+                userId,
+                action: "UPDATE_PROFILE",
+                metadata: {
+                    message: "Người dùng cập nhật thông tin cá nhân",
+                },
+                pointBefore: user.points,
+                pointChange: 0,
+                pointAfter: user.points,
+            });
+
+            return success(res, "Cập nhật thông tin thành công", {
+                username: user.username,
+                avatarUrl: user.avatarUrl,
+                provider: user.provider,
+            }, 200, req);
+        } catch (err) {
+            console.error("❌ updateInfo error:", err);
+            return error(res, "Không thể cập nhật thông tin", { chiTiet: err.message }, 500, req);
         }
     }
 
