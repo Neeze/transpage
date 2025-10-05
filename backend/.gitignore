@@ -19,6 +19,7 @@ build/
 coverage/
 
 uploads
+logs
 
 # System files
 .DS_Store
