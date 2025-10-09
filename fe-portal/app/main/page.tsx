@@ -265,7 +265,7 @@ export default function TranslatePage() {
                 <SelectValue placeholder="Định dạng đầu ra" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="docx">Docx</SelectItem>
               </SelectContent>
             </Select>
           </div>
