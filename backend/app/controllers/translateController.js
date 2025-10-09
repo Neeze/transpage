@@ -89,7 +89,7 @@ exports.createTranslateJob = async (req, res) => {
                 const result = response.data;
 
                 if (result.status === "Completed") {
-                    const translatedBuffer = Buffer.from(result.translated_pdf_base64, "base64");
+                    const translatedBuffer = Buffer.from(result.document_base64, "base64");
 
                     const outputDir = path.resolve(__dirname, "../../uploads");
                     const outputFile = path.join(outputDir, `${jobId}_translated.${order.outputFormat}`);
