@@ -5,6 +5,7 @@ const {authMiddleware} = require("../middlewares/authMiddleware");
 const translateRoutes = require("./translateRoutes");
 const apiKeyRoutes = require("./apiKeyRoutes");
 const paymentRoutes = require("./momoPaymentRoutes");
+const adminRoutes = require("./adminRoutes");
 
 const router = express.Router();
 
@@ -26,5 +27,6 @@ router.get("/activity-logs", authMiddleware, AuthController.getActivityLogs);
 router.use('/translate', authMiddleware, translateRoutes)
 router.use('/api-key', authMiddleware, apiKeyRoutes)
 router.use('/payment', paymentRoutes)
+router.use('/admin', adminRoutes)
 
 module.exports = router;
