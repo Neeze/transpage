@@ -23,7 +23,6 @@ export default function TranslatePage() {
   const [sourceLang, setSourceLang] = useState("");
   const [targetLang, setTargetLang] = useState("");
   const [topic, setTopic] = useState("");
-  const [outputFormat, setOutputFormat] = useState("");
 
   // Danh sách ngôn ngữ
   const [languages, setLanguages] = useState<Record<string, string>>({});
@@ -88,7 +87,6 @@ export default function TranslatePage() {
     formData.append("source_lang", sourceLang || "auto");
     formData.append("target_lang", targetLang || "vi");
     formData.append("topic", topic || "general");
-    formData.append("output_format", outputFormat || "pdf");
 
     try {
       const res = await api.post("/translate", formData, {
@@ -128,7 +126,7 @@ export default function TranslatePage() {
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${jobId}_translated.${outputFormat || "pdf"}`;
+      link.download = `${jobId}_translated.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (err) {
@@ -191,7 +189,7 @@ export default function TranslatePage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {/* Source Language */}
           <div>
@@ -206,12 +204,11 @@ export default function TranslatePage() {
                       Đang tải...
                     </SelectItem>
                 ) : (
-                    Object.entries(languages)
-                        .map(([code, name]) => (
-                            <SelectItem key={code} value={code}>
-                              {name}
-                            </SelectItem>
-                        ))
+                    Object.entries(languages).map(([code, name]) => (
+                        <SelectItem key={code} value={code}>
+                          {name}
+                        </SelectItem>
+                    ))
                 )}
               </SelectContent>
             </Select>
@@ -254,18 +251,6 @@ export default function TranslatePage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="general">Chung</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Output Format */}
-          <div>
-            <Select onValueChange={setOutputFormat}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Định dạng đầu ra" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="docx">Docx</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -319,8 +304,7 @@ export default function TranslatePage() {
                       Bản dịch đã sẵn sàng 🎉
                     </p>
                     <p className="text-sm text-gray-600">
-                      {file?.name.replace(/\.[^/.]+$/, "")}_translated.
-                      {outputFormat || "pdf"}
+                      {file?.name.replace(/\.[^/.]+$/, "")}_translated.pdf
                     </p>
                   </div>
                 </div>

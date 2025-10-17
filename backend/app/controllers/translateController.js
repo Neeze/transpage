@@ -51,35 +51,33 @@ exports.createTranslateJob = async (req, res) => {
     const filePath = req.file.path;
 
     try {
-        // Bảo đảm thư mục uploads tồn tại
         const uploadDir = path.resolve(__dirname, "../../uploads");
         if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
-        // Tạo đơn hàng
         const order = await Order.create({
             jobId,
             userId,
             sourceLang: req.body.source_lang || "en",
             targetLang: req.body.target_lang || "vi",
             topic: req.body.topic || "general",
-            outputFormat: req.body.output_format || "pdf",
+            outputFormat: "pdf",
             filePath,
             status: "pending",
             costPoints: 0,
         });
 
-        // Cập nhật trạng thái ban đầu vào Redis
         await redis.set(`translate:job:${jobId}:status`, "Pending");
 
-        // Xử lý nền
         process.nextTick(async () => {
             try {
                 await order.update({ status: "processing" });
                 await redis.set(`translate:job:${jobId}:status`, "Processing");
 
+                // Đọc file và mã hoá base64
                 const buffer = fs.readFileSync(filePath);
                 const base64File = buffer.toString("base64");
 
+                // Gọi API dịch PDF
                 const response = await axios.post("http://module.transpage.net/api/v1/pdf/translate-fast/", {
                     pdf_base64: base64File,
                     source_lang: "auto",
@@ -88,46 +86,51 @@ exports.createTranslateJob = async (req, res) => {
 
                 const result = response.data;
 
-                if (result.status === "Completed") {
-                    const translatedBuffer = Buffer.from(result.document_base64, "base64");
-
-                    const outputDir = path.resolve(__dirname, "../../uploads");
-                    const outputFile = path.join(outputDir, `${jobId}_translated.${order.outputFormat}`);
-                    fs.writeFileSync(outputFile, translatedBuffer);
-
-                    await order.update({
-                        status: "done",
-                        translatedFilePath: outputFile,
-                        cost: result.api_cost_usd || order.cost,
-                    });
-
-                    // Cập nhật Redis
-                    await redis.set(`translate:job:${jobId}:status`, "Completed");
-                    await redis.set(`translate:job:${jobId}:result`, outputFile);
-
-                    // Ghi log hoạt động và điểm
-                    const user = await User.findByPk(userId);
-                    if (user) {
-                        const before = user.points;
-                        const change = -order.costPoints;
-                        const after = before + change;
-
-                        await user.update({ points: after });
-
-                        await ActivityLog.create({
-                            userId,
-                            action: "TRANSLATE_FILE",
-                            metadata: { orderId: order.id, jobId },
-                            pointBefore: before,
-                            pointChange: change,
-                            pointAfter: after,
-                            UserId: user.id,
-                        });
-                    }
-                } else {
-                    await order.update({ status: "failed" });
-                    await redis.set(`translate:job:${jobId}:status`, "Failed");
+                // Kiểm tra trạng thái
+                if (result.status !== "Completed") {
+                    throw new Error(`Translation failed or incomplete: ${result.status}`);
                 }
+
+                // Kiểm tra dữ liệu PDF trả về
+                if (!result.pdf_base64) {
+                    throw new Error("Missing pdf_base64 in translation result.");
+                }
+
+                // Ghi file PDF kết quả
+                const translatedBuffer = Buffer.from(result.pdf_base64, "base64");
+                const outputFile = path.join(uploadDir, `${jobId}_translated.pdf`);
+                fs.writeFileSync(outputFile, translatedBuffer);
+
+                // Cập nhật đơn hàng
+                await order.update({
+                    status: "done",
+                    translatedFilePath: outputFile,
+                    cost: result.api_cost_usd || order.cost,
+                });
+
+                await redis.set(`translate:job:${jobId}:status`, "Completed");
+                await redis.set(`translate:job:${jobId}:result`, outputFile);
+
+                // Cập nhật điểm người dùng
+                const user = await User.findByPk(userId);
+                if (user) {
+                    const before = user.points;
+                    const change = -order.costPoints;
+                    const after = before + change;
+
+                    await user.update({ points: after });
+
+                    await ActivityLog.create({
+                        userId,
+                        action: "TRANSLATE_FILE",
+                        metadata: { orderId: order.id, jobId },
+                        pointBefore: before,
+                        pointChange: change,
+                        pointAfter: after,
+                        UserId: user.id,
+                    });
+                }
+
             } catch (err) {
                 console.error("Translation error:", err);
                 await order.update({ status: "failed", errorMessage: err.message });
@@ -136,6 +139,7 @@ exports.createTranslateJob = async (req, res) => {
         });
 
         res.json({ jobId, status: "Pending" });
+
     } catch (err) {
         console.error("Job create error:", err);
         res.status(500).json({ error: "Failed to create job" });
