@@ -1,7 +1,8 @@
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Wallet } from "lucide-react"
+import {Coins, Wallet} from "lucide-react"
 import {useAuthContext} from "@/context/auth-context";
+import {IconCoin, IconCoinPound, IconFireHydrant, IconLighter, IconPoint} from "@tabler/icons-react";
 
 export function SiteHeader() {
   const { user, loading } = useAuthContext()
@@ -16,7 +17,7 @@ export function SiteHeader() {
           />
           {/* Số dư thay cho chữ "Trang Chính" */}
           <div className="flex items-center gap-2 text-base font-medium text-blue-600">
-            Số dư: {user?.points ? user?.points?.toLocaleString("vi-VN") : '0'} $
+            Số dư: {user?.points ? user?.points?.toLocaleString("vi-VN") : '0'} ⚡
           </div>
 
           <div className="ml-auto flex items-center gap-2">
