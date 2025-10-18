@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
-import { Loader2, Wallet, History } from "lucide-react"
+import {Loader2, Wallet, History, Coins} from "lucide-react"
 import { toast } from "sonner"
 import api from "@/lib/axios"
 import { cn } from "@/lib/utils"
@@ -94,7 +94,7 @@ export default function PaymentPage() {
                                     {Number(pkg.amount).toLocaleString("vi-VN")} VND
                                 </p>
                                 <p className="text-xs text-green-600 mt-1">
-                                    Nhận {Number(pkg.points).toLocaleString("vi-VN")} điểm
+                                    Nhận {Number(pkg.points).toLocaleString("vi-VN")} ⚡
                                 </p>
                                 {pkg.description && (
                                     <p className="text-xs text-muted-foreground mt-1">{pkg.description}</p>

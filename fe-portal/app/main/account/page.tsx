@@ -130,7 +130,7 @@ export default function AccountPage() {
                                     <span>{user.role}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <Coins className="w-4 h-4 text-yellow-500" />
+                                    ⚡
                                     <span>{user.points.toLocaleString("vi-VN")} điểm</span>
                                 </div>
                             </div>

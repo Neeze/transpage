@@ -14,7 +14,7 @@ import {
     Pagination, PaginationContent, PaginationItem,
     PaginationLink, PaginationNext, PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Download, Loader2, CheckCircle2, XCircle, Hourglass } from "lucide-react"
+import {Download, Loader2, CheckCircle2, XCircle, Hourglass, Coins} from "lucide-react"
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select"
@@ -80,7 +80,7 @@ export function OrdersTable({
         {
             accessorKey: "costPoints",
             header: "Chi phí",
-            cell: ({ row }) => <span>{row.original.costPoints} $</span>,
+            cell: ({ row }) => <span>{row.original.costPoints} ⚡</span>,
         },
         {
             accessorKey: "status",
