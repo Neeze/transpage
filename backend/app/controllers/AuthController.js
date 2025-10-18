@@ -19,7 +19,7 @@ class AuthController {
                 email,
                 password: hashed,
                 role: "user",
-                points: 0,
+                points: 5,
                 provider: "local",
             });
 
@@ -105,7 +105,7 @@ class AuthController {
                     email,
                     password: null,
                     role: "user",
-                    points: 0,
+                    points: 5,
                     provider: "google",
                     googleId: sub,
                     avatarUrl: picture,
