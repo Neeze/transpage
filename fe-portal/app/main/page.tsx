@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Upload, Download, FileText, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner"; // ✅ Thông báo thân thiện
 
 export default function TranslatePage() {
   const [file, setFile] = useState<File | null>(null);
@@ -19,7 +20,7 @@ export default function TranslatePage() {
   const [loading, setLoading] = useState(false);
   const [downloadId, setDownloadId] = useState<string | null>(null);
 
-  // State cho form
+  // Form states
   const [sourceLang, setSourceLang] = useState("");
   const [targetLang, setTargetLang] = useState("");
   const [topic, setTopic] = useState("");
@@ -28,7 +29,7 @@ export default function TranslatePage() {
   const [languages, setLanguages] = useState<Record<string, string>>({});
   const [langLoading, setLangLoading] = useState(true);
 
-  // Lấy danh sách ngôn ngữ hỗ trợ từ backend
+  // === Lấy danh sách ngôn ngữ hỗ trợ ===
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
@@ -36,6 +37,7 @@ export default function TranslatePage() {
         setLanguages(res.data.languages || {});
       } catch (err) {
         console.error("Failed to load supported languages:", err);
+        toast.error("Không thể tải danh sách ngôn ngữ hỗ trợ.", { duration: 2500 });
       } finally {
         setLangLoading(false);
       }
@@ -43,13 +45,13 @@ export default function TranslatePage() {
     fetchLanguages();
   }, []);
 
-  // chọn file bằng click
+  // === Chọn file ===
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
 
     if (selected.type !== "application/pdf" && !selected.name.endsWith(".pdf")) {
-      alert("❌ Chỉ được phép tải lên tệp PDF!");
+      toast.warning("Chỉ được phép tải lên tệp PDF!", { duration: 2500 });
       e.target.value = "";
       return;
     }
@@ -58,7 +60,7 @@ export default function TranslatePage() {
     setDownloadId(null);
   };
 
-  // kéo & thả file
+  // === Kéo & thả file ===
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -68,7 +70,7 @@ export default function TranslatePage() {
     if (!dropped) return;
 
     if (dropped.type !== "application/pdf" && !dropped.name.endsWith(".pdf")) {
-      alert("❌ Chỉ được phép tải lên tệp PDF!");
+      toast.warning("Chỉ được phép tải lên tệp PDF!", { duration: 2500 });
       return;
     }
 
@@ -76,11 +78,17 @@ export default function TranslatePage() {
     setDownloadId(null);
   };
 
-  // gọi API dịch
+  // === Gọi API dịch ===
   const handleTranslate = async () => {
-    if (!file) return;
+    if (!file) {
+      toast.info("Vui lòng chọn tệp PDF trước khi dịch.");
+      return;
+    }
+
     setLoading(true);
     setDownloadId(null);
+
+    const loadingToast = toast.loading("Đang xử lý bản dịch...");
 
     const formData = new FormData();
     formData.append("file", file);
@@ -93,6 +101,10 @@ export default function TranslatePage() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
+      if (res.data?.error) {
+        throw new Error(res.data.error);
+      }
+
       const { jobId } = res.data;
 
       let status = "Pending";
@@ -104,19 +116,26 @@ export default function TranslatePage() {
 
       if (status === "Completed") {
         setDownloadId(jobId);
+        toast.dismiss(loadingToast);
+        toast.success("🎉 Bản dịch đã hoàn tất và sẵn sàng tải về!");
       } else {
-        alert("❌ Dịch thất bại, vui lòng thử lại.");
+        toast.dismiss(loadingToast);
+        toast.error("❌ Dịch thất bại, vui lòng thử lại.");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("⚠️ Có lỗi xảy ra khi dịch.");
+      const msg = err.response?.data?.error || err.message || "⚠️ Có lỗi xảy ra khi dịch.";
+      toast.dismiss(loadingToast);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  // tải file kết quả
+
+  // === Tải file kết quả ===
   const handleDownload = async (jobId: string) => {
+    const toastId = toast.loading("Đang tải file...", { duration: 999999 });
     try {
       const res = await api.get(`/translate/download/${jobId}`, {
         responseType: "blob",
@@ -129,9 +148,11 @@ export default function TranslatePage() {
       link.download = `${jobId}_translated.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
+
+      toast.success("✅ Tải xuống hoàn tất!", { id: toastId, duration: 2000 });
     } catch (err) {
       console.error("Download failed:", err);
-      alert("⚠️ Tải file thất bại!");
+      toast.error("⚠️ Tải file thất bại!", { id: toastId, duration: 2500 });
     }
   };
 
@@ -166,7 +187,7 @@ export default function TranslatePage() {
               <input
                   id="file-input"
                   type="file"
-                  accept=".pdf" // ✅ chỉ cho phép PDF
+                  accept=".pdf"
                   className="hidden"
                   onChange={handleFileSelect}
               />
@@ -204,7 +225,13 @@ export default function TranslatePage() {
                       Đang tải...
                     </SelectItem>
                 ) : (
-                    Object.entries(languages).map(([code, name]) => (
+                    Object.entries(languages)
+                        .filter(
+                            ([code, name]) =>
+                                code.toLowerCase() !== "auto" &&
+                                name.toLowerCase() !== "auto"
+                        )
+                        .map(([code, name]) => (
                         <SelectItem key={code} value={code}>
                           {name}
                         </SelectItem>
@@ -276,20 +303,6 @@ export default function TranslatePage() {
 
         {/* Result */}
         <AnimatePresence>
-          {loading && (
-              <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="bg-yellow-50 border border-yellow-200 p-5 rounded-xl flex items-center gap-3 shadow justify-center"
-              >
-                <Loader2 className="w-6 h-6 text-yellow-600 animate-spin" />
-                <span className="text-sm font-medium text-yellow-700">
-              Hệ thống đang xử lý bản dịch, vui lòng chờ...
-            </span>
-              </motion.div>
-          )}
-
           {downloadId && !loading && (
               <motion.div
                   initial={{ opacity: 0, y: 20 }}
