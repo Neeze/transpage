@@ -54,6 +54,18 @@ exports.createTranslateJob = async (req, res) => {
         const uploadDir = path.resolve(__dirname, "../../uploads");
         if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
+        // --- Lấy thông tin người dùng ---
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // --- Xác định chi phí dịch (có thể tuỳ chỉnh công thức) ---
+        const costPoints = 1; // Ví dụ: 50 điểm cho mỗi file PDF dịch
+        if (user.points < costPoints) {
+            return res.status(400).json({ error: "Không đủ tiền" });
+        }
+
         const order = await Order.create({
             jobId,
             userId,
@@ -63,7 +75,7 @@ exports.createTranslateJob = async (req, res) => {
             outputFormat: "pdf",
             filePath,
             status: "pending",
-            costPoints: 0,
+            costPoints: costPoints,
         });
 
         await redis.set(`translate:job:${jobId}:status`, "Pending");
